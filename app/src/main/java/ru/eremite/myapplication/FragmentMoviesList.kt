@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,7 +33,10 @@ class FragmentMoviesList : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_movies_list, container, false)
+        var vview = inflater.inflate(R.layout.fragment_movies_list, container, false)
+        var iv = vview.findViewById<ImageView>(R.id.poster_movie_1_image_view) as ImageView
+        iv.setOnClickListener(clickListener)
+        return vview
     }
 
     companion object {
@@ -53,5 +57,11 @@ class FragmentMoviesList : Fragment() {
                         putString(ARG_PARAM2, param2)
                     }
                 }
+    }
+
+    val clickListener = View.OnClickListener {view ->
+        getActivity()?.getSupportFragmentManager()?.beginTransaction()
+            ?.replace(R.id.fragment_container_view, MovieDetailsActivity())
+            ?.commit()
     }
 }

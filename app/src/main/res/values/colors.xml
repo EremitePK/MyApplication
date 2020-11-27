@@ -12,4 +12,7 @@
     <color name="whiteb">#FFFFFF</color>
     <color name="whiteb2">#D8D8D8</color>
     <color name="main">#191926</color>
+    <color name="oogray">#00191926</color>
+    <color name="ffgray">#ff191926</color>
+    <color name="movie_rectangle_color">#7F3B3B4D</color>
 </resources>
