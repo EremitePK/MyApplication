@@ -1,5 +1,6 @@
 package ru.eremite.myapplication
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,6 +23,18 @@ class MovieDetailsActivity : Fragment() {
         iv.setOnClickListener(clickListener)
 
         return vv
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        /*if (context is SomeFragmentClickListener){
+            someFragmentClickListener = context
+        }*/
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        /*someFragmentClickListener = null*/
     }
 
     val clickListener = View.OnClickListener {view ->

@@ -19,12 +19,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:background="@drawable/main_gradient_shape"
+            android:background="@drawable/orig"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/orig" />
+            app:srcCompat="@drawable/main_gradient_shape" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/top_menu_top_guideline"
@@ -106,9 +106,13 @@
 
         <RatingBar
             android:id="@+id/movie_rating_bar"
-            style="@style/CustomRatingBar"
-            android:layout_width="67dp"
-            android:layout_height="wrap_content"
+            android:progressDrawable="@drawable/custom_ratingbar"
+            android:isIndicator="true"
+            android:rating="4"
+            android:stepSize="1"
+            android:numStars="5"
+            android:layout_width="66dp"
+            android:layout_height="12dp"
             app:layout_constraintBottom_toBottomOf="@+id/movie_posts_text_view"
             app:layout_constraintStart_toStartOf="@+id/main_indent_start_guideline"
             app:layout_constraintTop_toTopOf="@+id/movie_posts_text_view" />

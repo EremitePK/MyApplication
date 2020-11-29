@@ -61,7 +61,7 @@ class FragmentMoviesList : Fragment() {
 
     val clickListener = View.OnClickListener {view ->
         getActivity()?.getSupportFragmentManager()?.beginTransaction()
-            ?.replace(R.id.fragment_container_view, MovieDetailsActivity())
+            ?.add(R.id.fragment_container_view, MovieDetailsActivity())
             ?.commit()
     }
 }
