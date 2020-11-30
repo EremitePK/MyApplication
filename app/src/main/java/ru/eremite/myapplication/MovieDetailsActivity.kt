@@ -11,6 +11,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 
 class MovieDetailsActivity : Fragment() {
+    private var listener: TopMainMenuClickListener? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -18,29 +20,22 @@ class MovieDetailsActivity : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        var vv=inflater.inflate(R.layout.activity_movie_details, container, false)
-        var iv = vv.findViewById<TextView>(R.id.back) as TextView
-        iv.setOnClickListener(clickListener)
-
-        return vv
+        var view=inflater.inflate(R.layout.activity_movie_details, container, false)
+        val backButton:TextView = view.findViewById<TextView>(R.id.back)
+        backButton.setOnClickListener{ listener?.OnMoviesListActiv() }
+        return view
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        /*if (context is SomeFragmentClickListener){
-            someFragmentClickListener = context
-        }*/
+        if (context is TopMainMenuClickListener){
+            listener = context
+        }
     }
 
     override fun onDetach() {
         super.onDetach()
-        /*someFragmentClickListener = null*/
-    }
-
-    val clickListener = View.OnClickListener {view ->
-        getActivity()?.getSupportFragmentManager()?.beginTransaction()
-            ?.replace(R.id.fragment_container_view, FragmentMoviesList())
-            ?.commit()
+        listener = null
     }
 
 }
