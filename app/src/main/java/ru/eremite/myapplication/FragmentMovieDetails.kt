@@ -10,19 +10,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 
-class MovieDetailsActivity : Fragment() {
+class FragmentMovieDetails : Fragment() {
     private var listener: TopMainMenuClickListener? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        var view=inflater.inflate(R.layout.activity_movie_details, container, false)
+        var view=inflater.inflate(R.layout.fragment_movie_details, container, false)
         val backButton:TextView = view.findViewById<TextView>(R.id.back)
-        backButton.setOnClickListener{ listener?.OnMoviesListActiv() }
+        backButton.setOnClickListener{ listener?.onMoviesListActiv() }
         return view
     }
 
@@ -34,8 +30,19 @@ class MovieDetailsActivity : Fragment() {
     }
 
     override fun onDetach() {
-        super.onDetach()
         listener = null
+        super.onDetach()
     }
+
+    companion object {
+        fun newInstance(): FragmentMovieDetails {
+            /*val args = Bundle()
+            args.putString("android", academy)*/
+            val fragment = FragmentMovieDetails()
+            /*fragment.arguments = args*/
+            return fragment
+        }
+    }
+
 
 }

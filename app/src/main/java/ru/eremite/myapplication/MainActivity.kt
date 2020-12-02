@@ -8,24 +8,24 @@ class MainActivity : AppCompatActivity(), TopMainMenuClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         if (savedInstanceState == null) {
-            OnMoviesListActiv()
+            onMoviesListActiv()
         }
     }
 
-    override fun OnMoviesListActiv() {
+    override fun onMoviesListActiv() {
         supportFragmentManager.beginTransaction()
-                ?.replace(R.id.fragment_container_view, FragmentMoviesList())
+                ?.replace(R.id.fragment_container_view, FragmentMoviesList.newInstance())
                 ?.commit()
     }
 
-    override fun OnMovieDetailList() {
+    override fun onMovieDetailList() {
         supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container_view, MovieDetailsActivity())
+                .replace(R.id.fragment_container_view, FragmentMovieDetails.newInstance())
                 .commit()
     }
 }
 
 interface TopMainMenuClickListener{
-    fun OnMoviesListActiv()
-    fun OnMovieDetailList()
+    fun onMoviesListActiv()
+    fun onMovieDetailList()
 }
