@@ -44,7 +44,7 @@ private class ActorDataViewHolder(itemView: View) : ActorsViewHolder(itemView) {
     private val name: TextView = itemView.findViewById(R.id.actor_name_text_view)
 
     fun onBind(actor: Actor) {
-        photo.setBackgroundResource(actor.photo)
+        photo.setImageResource(actor.photo)
         name.text = actor.name
     }
 
