@@ -10,6 +10,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 
 class FragmentMovieDetails : Fragment() {
     private var listener: TopMainMenuClickListener? = null
@@ -33,13 +34,23 @@ class FragmentMovieDetails : Fragment() {
         val store:TextView = view.findViewById<TextView>(R.id.movie_store_text_view)
 
         movie?.let{
-            poster.setBackgroundResource(it.poster)
-            age.setText(it.age)
-            name.setText(it.name)
-            genre.setText(it.genre)
+            try {
+                val resourcesDraw:Int = it.posterDetails.toInt()
+                Glide.with(context)
+                    .load(resourcesDraw)
+                    .into(poster)
+            } catch (e: NumberFormatException) {
+                Glide.with(context)
+                    .load("http://lardis.ru/academ/webp/"+it.posterDetails+".webp")
+                    //.apply(DataViewHolder.imageOption)
+                    .into(poster)
+            }
+            age.text = it.age
+            name.text = it.name
+            genre.text = it.genreString
             rating.rating = it.rating.toFloat()
-            posts.setText(it.reviews)
-            store.setText(it.store)
+            posts.text = it.reviews
+            store.text = it.store
         }
         return view
 
@@ -70,7 +81,7 @@ class FragmentMovieDetails : Fragment() {
 
     private fun updateData() {
         (actorListRecycler?.adapter as? ActorsAdapter)?.apply {
-            bindActors(movie!!.actors)
+            bindActors(movie!!.actorsList)
         }
     }
 
