@@ -18,14 +18,14 @@ class MainActivity : AppCompatActivity(), TopMainMenuClickListener {
                 ?.commit()
     }
 
-    override fun onMovieDetailList() {
+    override fun onMovieDetailList(id_movie:Int) {
         supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container_view, FragmentMovieDetails.newInstance())
+                .replace(R.id.fragment_container_view, FragmentMovieDetails.newInstance(id_movie))
                 .commit()
     }
 }
 
 interface TopMainMenuClickListener{
     fun onMoviesListActiv()
-    fun onMovieDetailList()
+    fun onMovieDetailList(id_movie: Int)
 }
