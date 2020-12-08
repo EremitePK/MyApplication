@@ -7,23 +7,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ru.eremite.myapplication.utils.Movie
+import ru.eremite.myapplication.utils.Header
+import ru.eremite.myapplication.utils.ModelData
 import ru.eremite.myapplication.utils.MoviesDataSource
+
+const val SpanCount = "spanCount"
 
 class FragmentMoviesList : Fragment() {
 
     private var listener: TopMainMenuClickListener? = null
     private var movieListRecycler: RecyclerView? = null
-    private val movies:MutableList<Movie> = MoviesDataSource().getMovies()
+    private val movies:List<ModelData.Movie> = MoviesDataSource().getMovies()
+    private var spanCount:Int? = 2
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+       spanCount = arguments?.getInt(SpanCount)
         return inflater.inflate(R.layout.fragment_movies_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         movieListRecycler = view.findViewById(R.id.movies_list_recycler_view)
-        movieListRecycler?.adapter = MoviesAdapter(clickListener)
+        movieListRecycler?.adapter = RecyclerViewAdapter(clickListener, Header(getString(R.string.name_movies_list),R.drawable.combined_shape),movies)//MoviesAdapter(clickListener)
     }
 
     companion object {
@@ -57,20 +62,21 @@ class FragmentMoviesList : Fragment() {
         }
     }
 
-    private fun doOnClick( movie: Movie) {
-        listener?.onMovieDetailList(movies.indexOf(movie))
+    private fun doOnClick( idMovie: Int) {
+        listener?.onMovieDetailList(idMovie)
     }
 
-    private fun doOnClickLike( movie: Movie) {
-        movies[movies.indexOf(movie)] = movie.copy(like = !movie.like)
-        updateData()
+    private fun doOnClickLike( idMovie: Int) {
+        var copyList = movies.toMutableList();
+        copyList[idMovie] = copyList[idMovie].copy(like = !copyList[idMovie].like)
     }
+
     private val clickListener = object : OnRecyclerItemClicked {
-        override fun onClick(movie: Movie) {
-            doOnClick(movie)
+        override fun onClick(idMovie: Int) {
+            doOnClick(idMovie)
         }
-        override fun onClickLike(movie: Movie) {
-            doOnClickLike(movie)
+        override fun onClickLike(idMovie: Int) {
+            doOnClickLike(idMovie)
         }
     }
 }

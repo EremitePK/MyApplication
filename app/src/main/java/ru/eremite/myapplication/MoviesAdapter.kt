@@ -9,46 +9,52 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
 import ru.eremite.myapplication.utils.ClassUtils
-import ru.eremite.myapplication.utils.Movie
+import ru.eremite.myapplication.utils.Header
+import ru.eremite.myapplication.utils.ModelData
 
 
 class MoviesAdapter(private val clickListener: OnRecyclerItemClicked) : RecyclerView.Adapter<MoviesViewHolder>() {
-    private var movies = listOf<Movie>()
+    private var movies = listOf<ModelData.Movie>()
 
     override fun getItemViewType(position: Int): Int {
-        return movies.size
+        return when (position){
+            0 -> VIEW_TYPE_MOVIE
+            else -> VIEW_TYPE_MOVIE
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesViewHolder {
         return DataViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.view_holder_movie, parent, false)
-        )
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.view_holder_movie, parent, false)
+            )
     }
 
     override fun onBindViewHolder(holder: MoviesViewHolder, position: Int) {
-        (holder as DataViewHolder).onBind(movies[position])
-        holder.itemView.setOnClickListener {
-            clickListener.onClick(movies[position])
-        }
-        holder.like.setOnClickListener {
-            clickListener.onClickLike(movies[position])
+        when (holder){
+            is DataViewHolder -> {holder.onBind(movies[position])
+                holder.itemView.setOnClickListener {
+                        clickListener.onClick(movies[position]._id)
+                }
+                (holder as DataViewHolder).like.setOnClickListener {
+                        clickListener.onClickLike(movies[position]._id)
+                    notifyDataSetChanged()
+                }
+            }
         }
     }
 
     override fun getItemCount(): Int = movies.size
 
-    fun bindMovies(newMovies: List<Movie>) {
+    fun bindMovies(newMovies: List<ModelData.Movie>) {
         movies = newMovies
         notifyDataSetChanged()
     }
 }
 
 abstract class MoviesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
 class DataViewHolder(itemView: View) : MoviesViewHolder(itemView) {
 
     private val poster: ImageView = itemView.findViewById(R.id.poster_movie_image_view)
@@ -60,7 +66,7 @@ class DataViewHolder(itemView: View) : MoviesViewHolder(itemView) {
     private val name: TextView = itemView.findViewById(R.id.movie_name_text_view)
     private val duration: TextView = itemView.findViewById(R.id.movie_duration_text_view)
 
-    fun onBind(movie: Movie) {
+    fun onBind(movie: ModelData.Movie) {
         movie.posterListRes?.let {
             Glide.with(context)
                 .load(it)
@@ -85,9 +91,13 @@ class DataViewHolder(itemView: View) : MoviesViewHolder(itemView) {
     }
 }
 
+const val VIEW_TYPE_HEADER = 0
+const val VIEW_TYPE_MOVIE = 1
+const val VIEW_TYPE_ACTORS = 2
+
 interface OnRecyclerItemClicked {
-    fun onClick(movie: Movie)
-    fun onClickLike(movie: Movie)
+    fun onClick(idMovie: Int)
+    fun onClickLike(idMovie: Int)
 }
 
 private val RecyclerView.ViewHolder.context

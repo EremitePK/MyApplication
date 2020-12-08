@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.eremite.myapplication.utils.ClassUtils
-import ru.eremite.myapplication.utils.Movie
+import ru.eremite.myapplication.utils.ModelData
 import ru.eremite.myapplication.utils.MoviesDataSource
 
 const val MovieIdKey = "id_movie"
@@ -20,7 +20,7 @@ const val MovieIdKey = "id_movie"
 class FragmentMovieDetails : Fragment() {
     private var listener: TopMainMenuClickListener? = null
     private var actorListRecycler: RecyclerView? = null
-    private var movie: Movie? = null
+    private var movie: ModelData.Movie? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
