@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:background="@drawable/movie_roundrect"
-    android:backgroundTint="@color/main">
+    android:backgroundTint="@color/main"
+    android:foreground="@drawable/movie_roundrect">
 
     <ImageView
         android:id="@+id/poster_movie_image_view"
@@ -14,7 +15,8 @@
         android:layout_height="248dp"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
-        android:background="@drawable/poster_1"
+        android:adjustViewBounds="true"
+
         android:contentDescription="@string/contentDescription"
         android:foreground="@drawable/movie_gradient_roundrect"
         android:scaleType="centerCrop"

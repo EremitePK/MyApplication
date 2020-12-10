@@ -19,8 +19,7 @@
         app:layout_constraintDimensionRatio="@string/demension_ratio"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/movie2" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/actor_name_text_view"
@@ -28,7 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="7dp"
-        android:text="@string/actorname1"
         android:textColor="@color/whiteb2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/actor_photo_image_view"
