@@ -14,10 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.eremite.myapplication.data.ModelData
 import ru.eremite.myapplication.data.loadMovies
-import ru.eremite.myapplication.utils.ElementsRecyclerView
-import ru.eremite.myapplication.utils.ModelDataOld
-import ru.eremite.myapplication.utils.MoviesDataSource
-import ru.eremite.myapplication.utils.OnRecyclerItemClicked
+import ru.eremite.myapplication.utils.*
 
 class FragmentMoviesList(private var listMovies: List<ModelData.Movie> = listOf()) : Fragment() {
 
@@ -41,12 +38,25 @@ class FragmentMoviesList(private var listMovies: List<ModelData.Movie> = listOf(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val l = listOf<ParamViewHolder>(
+            ParamViewHolder(
+                2,
+                "ru.eremite.myapplication.MovieViewHolder",
+                R.layout.view_holder_movie
+            ),
+            ParamViewHolder(
+                3,
+                "ru.eremite.myapplication.ActorViewHolder",
+                R.layout.view_holder_actor
+            )
+        )
         val spanCount: Int =
             (context as Activity).resources.configuration.screenWidthDp / 180 //The current width of the available screen space, in dp units, corresponding to screen width resource qualifier.
         movieListRecycler = view.findViewById(R.id.movies_list_recycler_view)
         val rvl = ElementsRecyclerView.RecyclerViewList(
             clickListener, listMovies,
-            GridLayoutManager(context, spanCount, GridLayoutManager.VERTICAL, false)
+            GridLayoutManager(context, spanCount, GridLayoutManager.VERTICAL, false),
+            ElementsRecyclerView.MainCreatorViewHolder(l)
         )
         moviesAdapter = rvl.adaptorRecyclerView
         val listElemLayout = listOf<ElementsRecyclerView>(
@@ -56,7 +66,12 @@ class FragmentMoviesList(private var listMovies: List<ModelData.Movie> = listOf(
             ),
             rvl
         )
-        recyclerViewAdapter = RecyclerViewAdapter(clickListener, listElemLayout, null)
+        recyclerViewAdapter = RecyclerViewAdapter(
+            clickListener,
+            listElemLayout,
+            null,
+            ElementsRecyclerView.MainCreatorViewHolder(l)
+        )
         movieListRecycler?.adapter = recyclerViewAdapter
     }
 
@@ -89,8 +104,11 @@ class FragmentMoviesList(private var listMovies: List<ModelData.Movie> = listOf(
     }
 
     private fun doOnClickLike(idMovie: Int) {
-        var copyList = movies.toMutableList()
-        copyList[idMovie] = copyList[idMovie].copy(like = !copyList[idMovie].like)
+        var copyList = listMovies.toMutableList()
+        copyList.filter { it.id==idMovie }.let {
+            var m = it[0]
+            m = it[0].copy(like = !it[0].like)
+        }
     }
 
     private val clickListener = object : OnRecyclerItemClicked {

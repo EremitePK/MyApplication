@@ -6,15 +6,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.eremite.myapplication.data.ModelData
-import ru.eremite.myapplication.utils.ElementsRecyclerView
-import ru.eremite.myapplication.utils.OnRecyclerItemClicked
-import ru.eremite.myapplication.utils.UniversalBind
-import ru.eremite.myapplication.utils.UniversalTypeHolderView
+import ru.eremite.myapplication.utils.*
 
 class RecyclerViewAdapter(
     val clickListener: OnRecyclerItemClicked? = null,
     private var listElements: List<ElementsRecyclerView>? = null,
-    private var listData: List<ModelData>? = null
+    private var listData: List<ModelData>? = null,
+    private val mainCreator: ElementsRecyclerView.MainCreatorViewHolder
 ) : RecyclerView.Adapter<RecyclerViewHolder>(), UniversalBind {
     override fun getItemViewType(position: Int): Int {
         listElements?.let { return (it[position] as UniversalTypeHolderView).getTypeView() }
@@ -23,7 +21,7 @@ class RecyclerViewAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
-        return ElementsRecyclerView.MainCreatorViewHolder(parent, viewType).createViewHolder()
+        return mainCreator.createViewHolder(parent, viewType)
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {

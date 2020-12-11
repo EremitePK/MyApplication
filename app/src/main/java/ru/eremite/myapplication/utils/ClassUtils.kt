@@ -1,6 +1,7 @@
 package ru.eremite.myapplication.utils
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.eremite.myapplication.*
@@ -22,27 +23,36 @@ interface UniversalTypeHolderView {
     fun getTypeView(): Int
 } //интерфей должен быть реализован у каждого ViewHolder который будет выводится в основной RecycleView
 
+data class ParamViewHolder(val typeInt: Int, val nameClass: String, val idLayoutViewHolder: Int)
+
 //все ViewHolder должны быть унаследованы от class RecyclerViewHolder(itemView: View)
+//надо реализовать чтобы создавался один экземпляр класса MainCreatorViewHolder в него передавать
+//список возможных ParamViewHolder. Сейчас приходится каждый раз созздавать список при вызове ВАЖНО
 sealed class ElementsRecyclerView {
-    data class MainCreatorViewHolder(val parent: ViewGroup, val typeCreateViewHolder: Int) {
-        fun createViewHolder(): RecyclerViewHolder {
+    data class MainCreatorViewHolder(private val listParamViewHolder: List<ParamViewHolder> = listOf()) {
+        fun createViewHolder(parent: ViewGroup, typeCreateViewHolder: Int): RecyclerViewHolder {
             return when (typeCreateViewHolder) {
                 0 -> MainHeaderViewHolder(
                     LayoutInflater.from(parent.context)
                         .inflate(R.layout.view_holder_header, parent, false)
                 )
-                2 -> MovieViewHolder(
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.view_holder_movie, parent, false)
-                )
-                3 -> ActorViewHolder(
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.view_holder_actor, parent, false)
-                )
-                else -> MainDataViewHolder(
+                1 -> MainDataViewHolder(
                     LayoutInflater.from(parent.context)
                         .inflate(R.layout.view_holder_recycler_view, parent, false)
                 )
+                else -> {
+                    listParamViewHolder.find { it.typeInt == typeCreateViewHolder }?.let {
+                        val c = Class.forName(it.nameClass).getConstructor(View::class.java)
+                        return (c.newInstance(
+                            LayoutInflater.from(parent.context)
+                                .inflate(it.idLayoutViewHolder, parent, false)
+                        )) as RecyclerViewHolder
+                    }
+                    return MainHeaderViewHolder(
+                        LayoutInflater.from(parent.context)
+                            .inflate(R.layout.view_holder_header, parent, false)
+                    )
+                }
             }
         }
     }
@@ -50,9 +60,12 @@ sealed class ElementsRecyclerView {
     data class RecyclerViewList(
         val clickListener: OnRecyclerItemClicked,
         val listData: List<ModelData>,
-        val layoutManager: RecyclerView.LayoutManager
+        val layoutManager: RecyclerView.LayoutManager,
+        val mainCreatorViewHolder: MainCreatorViewHolder
     ) : ElementsRecyclerView(), UniversalTypeHolderView {
-        val adaptorRecyclerView = RecyclerViewAdapter(clickListener, null, listData)
+        val adaptorRecyclerView =
+            RecyclerViewAdapter(clickListener, null, listData, mainCreatorViewHolder)
+
         override fun getTypeView() = 1
     }
 
