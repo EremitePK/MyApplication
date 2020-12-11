@@ -16,6 +16,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.eremite.myapplication.data.ModelData
 import ru.eremite.myapplication.data.loadMovies
+import ru.eremite.myapplication.utils.ElementsRecyclerView
+import ru.eremite.myapplication.utils.ParamViewHolder
 
 
 class FragmentMovieDetails() : Fragment() {
@@ -61,7 +63,22 @@ class FragmentMovieDetails() : Fragment() {
                 posts.text = it.numberOfRatings.toString()
                 store.text = it.overview
             }
-            actorsAdapter = RecyclerViewAdapter(null, null, movie?.actors)
+            val l = listOf<ParamViewHolder>(
+                ParamViewHolder(
+                    2,
+                    "ru.eremite.myapplication.MovieViewHolder",
+                    R.layout.view_holder_movie
+                ),
+                ParamViewHolder(
+                    3,
+                    "ru.eremite.myapplication.ActorViewHolder",
+                    R.layout.view_holder_actor
+                )
+            )
+            actorsAdapter = RecyclerViewAdapter(
+                null, null, movie?.actors,
+                ElementsRecyclerView.MainCreatorViewHolder(l)
+            )
             actorListRecycler?.adapter = actorsAdapter
         }
         return view

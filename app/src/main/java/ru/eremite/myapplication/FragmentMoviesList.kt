@@ -14,10 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.eremite.myapplication.data.ModelData
 import ru.eremite.myapplication.data.loadMovies
-import ru.eremite.myapplication.utils.ElementsRecyclerView
-import ru.eremite.myapplication.utils.ModelDataOld
-import ru.eremite.myapplication.utils.MoviesDataSource
-import ru.eremite.myapplication.utils.OnRecyclerItemClicked
+import ru.eremite.myapplication.utils.*
 
 class FragmentMoviesList(private var listMovies: List<ModelData.Movie> = listOf()) : Fragment() {
 
@@ -31,12 +28,18 @@ class FragmentMoviesList(private var listMovies: List<ModelData.Movie> = listOf(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val scope = CoroutineScope(Dispatchers.Main)
-        scope.launch {
-            listMovies = loadMovies(requireContext())
+        val classUtils = ClassUtils()
+        //updateData()
+        if (classUtils.listMovies.isEmpty()) {
+            val scope = CoroutineScope(Dispatchers.Main)
+            scope.launch {
+                listMovies = classUtils.loadMoviesUtils(requireContext())
+                updateData()
+            }
+        } else {
+            listMovies = classUtils.listMovies
             updateData()
         }
-
         return inflater.inflate(R.layout.fragment_movies_list, container, false)
     }
 
@@ -44,9 +47,11 @@ class FragmentMoviesList(private var listMovies: List<ModelData.Movie> = listOf(
         val spanCount: Int =
             (context as Activity).resources.configuration.screenWidthDp / 180 //The current width of the available screen space, in dp units, corresponding to screen width resource qualifier.
         movieListRecycler = view.findViewById(R.id.movies_list_recycler_view)
+        val classUtils = ClassUtils()
         val rvl = ElementsRecyclerView.RecyclerViewList(
             clickListener, listMovies,
-            GridLayoutManager(context, spanCount, GridLayoutManager.VERTICAL, false)
+            GridLayoutManager(context, spanCount, GridLayoutManager.VERTICAL, false),
+            classUtils.mainCreatorViewHolder
         )
         moviesAdapter = rvl.adaptorRecyclerView
         val listElemLayout = listOf<ElementsRecyclerView>(
@@ -56,7 +61,12 @@ class FragmentMoviesList(private var listMovies: List<ModelData.Movie> = listOf(
             ),
             rvl
         )
-        recyclerViewAdapter = RecyclerViewAdapter(clickListener, listElemLayout, null)
+        recyclerViewAdapter = RecyclerViewAdapter(
+            clickListener,
+            listElemLayout,
+            null,
+            classUtils.mainCreatorViewHolder
+        )
         movieListRecycler?.adapter = recyclerViewAdapter
     }
 
@@ -89,8 +99,11 @@ class FragmentMoviesList(private var listMovies: List<ModelData.Movie> = listOf(
     }
 
     private fun doOnClickLike(idMovie: Int) {
-        var copyList = movies.toMutableList()
-        copyList[idMovie] = copyList[idMovie].copy(like = !copyList[idMovie].like)
+        var copyList = listMovies.toMutableList()
+        copyList.filter { it.id==idMovie }.let {
+            var m = it[0]
+            m = it[0].copy(like = !it[0].like)
+        }
     }
 
     private val clickListener = object : OnRecyclerItemClicked {
