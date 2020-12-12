@@ -6,7 +6,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.eremite.myapplication.data.ModelData
-import ru.eremite.myapplication.utils.*
+import ru.eremite.myapplication.utils.ElementsRecyclerView
+import ru.eremite.myapplication.utils.OnRecyclerItemClicked
+import ru.eremite.myapplication.utils.UniversalBind
+import ru.eremite.myapplication.utils.UniversalTypeHolderView
 
 class RecyclerViewAdapter(
     val clickListener: OnRecyclerItemClicked? = null,

@@ -1,6 +1,5 @@
 package ru.eremite.myapplication.utils
 
-import android.app.Application
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,7 @@ import ru.eremite.myapplication.*
 import ru.eremite.myapplication.data.ModelData
 import ru.eremite.myapplication.data.loadMovies
 
-class ClassUtils() : Application() {
+class ClassUtils() {
     private var listParamViewHolder = listOf<ParamViewHolder>(
         ParamViewHolder(
             2,
@@ -23,7 +22,11 @@ class ClassUtils() : Application() {
             R.layout.view_holder_actor
         )
     )
-    var mainCreatorViewHolder = ElementsRecyclerView.MainCreatorViewHolder(listParamViewHolder)
+    val mainCreatorViewHolder by lazy {
+        ElementsRecyclerView.MainCreatorViewHolder(
+            listParamViewHolder
+        )
+    }
     var listMovies: List<ModelData.Movie> = listOf()
     suspend fun loadMoviesUtils(context: Context): List<ModelData.Movie> {
         listMovies = loadMovies(context)
