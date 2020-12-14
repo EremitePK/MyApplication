@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.eremite.myapplication.data.ModelData
@@ -16,22 +17,25 @@ import ru.eremite.myapplication.utils.ElementsRecyclerView
 import ru.eremite.myapplication.utils.MovieViewModel
 import ru.eremite.myapplication.utils.OnRecyclerItemClicked
 
-class FragmentMoviesList(private val movieViewModel: MovieViewModel) : Fragment() {
+
+class FragmentMoviesList() : Fragment() {
 
     private var listener: TopMainMenuClickListener? = null
     private var movieListRecycler: RecyclerView? = null
     private lateinit var moviesAdapter: RecyclerViewAdapter
     private lateinit var recyclerViewAdapter: RecyclerViewAdapter
+    private lateinit var movieViewModel:MovieViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val factory = MovieViewModel.Factory(requireContext())
+        movieViewModel = ViewModelProvider(this,factory).get(MovieViewModel::class.java)
         return inflater.inflate(R.layout.fragment_movies_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         val spanCount: Int =
             (context as Activity).resources.configuration.screenWidthDp / 180 //The current width of the available screen space, in dp units, corresponding to screen width resource qualifier.
         movieListRecycler = view.findViewById(R.id.movies_list_recycler_view)
@@ -111,7 +115,7 @@ class FragmentMoviesList(private val movieViewModel: MovieViewModel) : Fragment(
     }
 
     companion object {
-        fun newInstance(movieViewModel: MovieViewModel) = FragmentMoviesList(movieViewModel)
+        fun newInstance() = FragmentMoviesList()
     }
 }
 

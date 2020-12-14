@@ -4,13 +4,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import ru.eremite.myapplication.*
 import ru.eremite.myapplication.data.ModelData
-import ru.eremite.myapplication.data.loadMovies
 
 class ClassUtils() {
-    private var listParamViewHolder = listOf<ParamViewHolder>(
+    private var listParamViewHolder = listOf(
         ParamViewHolder(
             2,
             "ru.eremite.myapplication.MovieViewHolder",
@@ -27,11 +28,7 @@ class ClassUtils() {
             listParamViewHolder
         )
     }
-    var listMovies: List<ModelData.Movie> = listOf()
-    suspend fun loadMoviesUtils(context: Context): List<ModelData.Movie> {
-        listMovies = loadMovies(context)
-        return listMovies
-    }
+    //val movieViewModel by lazy<MovieViewModel> { ViewModelProviders.of(fragment).get(MovieViewModel::class.java)}
 }
 
 // универсальный построитель (создатель) динамических форм RecycleView и адаптор

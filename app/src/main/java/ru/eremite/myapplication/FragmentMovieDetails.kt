@@ -1,5 +1,6 @@
 package ru.eremite.myapplication
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +10,10 @@ import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.eremite.myapplication.data.ModelData
@@ -17,11 +21,12 @@ import ru.eremite.myapplication.utils.ClassUtils
 import ru.eremite.myapplication.utils.MovieViewModel
 
 
-class FragmentMovieDetails(private val movieViewModel: MovieViewModel) : Fragment() {
+class FragmentMovieDetails() : Fragment() {
     private var listener: TopMainMenuClickListener? = null
     private var actorListRecycler: RecyclerView? = null
     private var movie: ModelData.Movie? = null
     private lateinit var actorsAdapter: RecyclerViewAdapter
+    private lateinit var movieViewModel: MovieViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,10 +34,13 @@ class FragmentMovieDetails(private val movieViewModel: MovieViewModel) : Fragmen
     ): View? {
         // Inflate the layout for this fragment
         var view = inflater.inflate(R.layout.fragment_movie_details, container, false)
+        val factory = MovieViewModel.Factory(requireContext())
+        movieViewModel = ViewModelProvider(this,factory).get(MovieViewModel::class.java)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val classUtils = ClassUtils()
         val idMovie: Int? = arguments?.getInt(MOVIE_ID_KEY)
         val backButton: TextView = view.findViewById(R.id.back)
         backButton.setOnClickListener {
@@ -48,7 +56,7 @@ class FragmentMovieDetails(private val movieViewModel: MovieViewModel) : Fragmen
         }
         actorsAdapter = RecyclerViewAdapter(
             null, null, listActors,
-            ClassUtils().mainCreatorViewHolder
+            classUtils.mainCreatorViewHolder
         )
         actorListRecycler?.adapter = actorsAdapter
         updateData(view)
@@ -108,8 +116,8 @@ class FragmentMovieDetails(private val movieViewModel: MovieViewModel) : Fragmen
 
     companion object {
         private const val MOVIE_ID_KEY = "id_movie"
-        fun newInstance(movieViewModel: MovieViewModel, idMovie: Int) =
-            FragmentMovieDetails(movieViewModel).apply {
+        fun newInstance(idMovie: Int) =
+            FragmentMovieDetails().apply {
                 arguments = Bundle().apply {
                     putInt(MOVIE_ID_KEY, idMovie)
                 }
