@@ -7,8 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import ru.eremite.myapplication.utils.ClassUtils
-import ru.eremite.myapplication.utils.ModelData
+import com.bumptech.glide.request.RequestOptions
+import ru.eremite.myapplication.data.ModelData
 
 class ActorsAdapter() : RecyclerView.Adapter<ActorsViewHolder>() {
     private var actors = listOf<ModelData.Actor>()
@@ -19,8 +19,8 @@ class ActorsAdapter() : RecyclerView.Adapter<ActorsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActorsViewHolder {
         return ActorDataViewHolder(
-                LayoutInflater.from(parent.context)
-                        .inflate(R.layout.view_holder_actor, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.view_holder_actor, parent, false)
         )
     }
 
@@ -43,13 +43,13 @@ private class ActorDataViewHolder(itemView: View) : ActorsViewHolder(itemView) {
     private val name: TextView = itemView.findViewById(R.id.actor_name_text_view)
 
     fun onBind(actor: ModelData.Actor) {
-        actor.photoRes?.let {
+        actor.picture?.let {
             Glide.with(context)
                 .load(it)
-                .into(photo)}
-        actor.photoURL?.let {
-            Glide.with(context)
-                .load(ClassUtils().getURI(it))
+                .apply(
+                    RequestOptions()
+                        .centerInside()
+                )
                 .into(photo)
         }
         name.text = actor.name

@@ -9,16 +9,16 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import ru.eremite.myapplication.utils.ClassUtils
-import ru.eremite.myapplication.utils.Header
-import ru.eremite.myapplication.utils.ModelData
+import com.bumptech.glide.request.RequestOptions
+import ru.eremite.myapplication.data.ModelData
 
 
-class MoviesAdapter(private val clickListener: OnRecyclerItemClicked) : RecyclerView.Adapter<MoviesViewHolder>() {
+class MoviesAdapter(private val clickListener: OnRecyclerItemClicked) :
+    RecyclerView.Adapter<MoviesViewHolder>() {
     private var movies = listOf<ModelData.Movie>()
 
     override fun getItemViewType(position: Int): Int {
-        return when (position){
+        return when (position) {
             0 -> VIEW_TYPE_MOVIE
             else -> VIEW_TYPE_MOVIE
         }
@@ -26,19 +26,20 @@ class MoviesAdapter(private val clickListener: OnRecyclerItemClicked) : Recycler
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesViewHolder {
         return DataViewHolder(
-                LayoutInflater.from(parent.context)
-                    .inflate(R.layout.view_holder_movie, parent, false)
-            )
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.view_holder_movie, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: MoviesViewHolder, position: Int) {
-        when (holder){
-            is DataViewHolder -> {holder.onBind(movies[position])
+        when (holder) {
+            is DataViewHolder -> {
+                holder.onBind(movies[position])
                 holder.itemView.setOnClickListener {
-                        clickListener.onClick(movies[position]._id)
+                    clickListener.onClick(movies[position].id)
                 }
                 (holder as DataViewHolder).like.setOnClickListener {
-                        clickListener.onClickLike(movies[position]._id)
+                    clickListener.onClickLike(movies[position].id)
                     notifyDataSetChanged()
                 }
             }
@@ -67,27 +68,27 @@ class DataViewHolder(itemView: View) : MoviesViewHolder(itemView) {
     private val duration: TextView = itemView.findViewById(R.id.movie_duration_text_view)
 
     fun onBind(movie: ModelData.Movie) {
-        movie.posterListRes?.let {
+        movie.poster?.let {
             Glide.with(context)
                 .load(it)
-                .into(poster)}
-        movie.posterListURL?.let {
-            Glide.with(context)
-                .load(ClassUtils().getURI(it))
+                .apply(
+                    RequestOptions()
+                        .centerInside()
+                )
                 .into(poster)
         }
-        age.text = movie.age
-        if (movie.like){
+        age.text = context.getString(R.string.age_format, movie.minimumAge)
+        if (movie.like) {
             like.setImageResource(R.drawable.like_check)
         } else {
             like.setImageResource(R.drawable.like)
         }
 
-        genre.text = movie.genreString
-        rating.rating = movie.rating.toFloat()
-        name.text = movie.name
-        reviews.text = movie.reviews+" Reviews"
-        duration.text = movie.duration+" min"
+        genre.text = movie.getGeners()
+        rating.rating = movie.ratings / 2
+        name.text = movie.title
+        reviews.text = ""
+        duration.text = context.getString(R.string.duration_format, movie.runtime.toString())
     }
 }
 
