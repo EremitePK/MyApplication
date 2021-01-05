@@ -1,8 +1,7 @@
 package ru.eremite.myapplication
 
-import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity(), TopMainMenuClickListener {
 
@@ -15,21 +14,19 @@ class MainActivity : AppCompatActivity(), TopMainMenuClickListener {
     }
 
     override fun onMoviesListActiv() {
-
         supportFragmentManager.beginTransaction()
             ?.replace(R.id.fragment_container_view, FragmentMoviesList.newInstance())
             ?.commit()
     }
 
-    override fun onMovieDetailList(id_movie: Int) {
-
+    override fun onMovieDetailList(idMovie: Int) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container_view, FragmentMovieDetails.newInstance(id_movie))
+            .replace(R.id.fragment_container_view, FragmentMovieDetails.newInstance(idMovie))
             .commit()
     }
 }
 
 interface TopMainMenuClickListener {
     fun onMoviesListActiv()
-    fun onMovieDetailList(id_movie: Int)
+    fun onMovieDetailList(idMovie: Int)
 }
