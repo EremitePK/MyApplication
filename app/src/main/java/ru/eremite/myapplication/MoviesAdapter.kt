@@ -7,15 +7,21 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import ru.eremite.myapplication.data.ModelData
+import ru.eremite.myapplication.ViewModel.MoviesListViewModel
+import ru.eremite.myapplication.ViewModel.PresentationModelData
+import ru.eremite.myapplication.utils.DiffUtilCallbackSolution
 
 
-class MoviesAdapter(private val clickListener: OnRecyclerItemClicked) :
+class MoviesAdapter(
+    private val clickListener: OnRecyclerItemClicked,
+    private val listViewModel: MoviesListViewModel
+) :
     RecyclerView.Adapter<MoviesViewHolder>() {
-    private var movies = listOf<ModelData.Movie>()
+    private var movies = mutableListOf<PresentationModelData.MoviePresentation>()
 
     override fun getItemViewType(position: Int): Int {
         return when (position) {
@@ -38,19 +44,27 @@ class MoviesAdapter(private val clickListener: OnRecyclerItemClicked) :
                 holder.itemView.setOnClickListener {
                     clickListener.onClick(movies[position].id)
                 }
-                (holder as DataViewHolder).like.setOnClickListener {
+                holder.like.setOnClickListener {
                     clickListener.onClickLike(movies[position].id)
-                    notifyDataSetChanged()
                 }
             }
+        }
+        if ((!(listViewModel.loadingMoviesList.value
+                ?: false)) && (!(listViewModel.updateMoviesList.value
+                ?: false)) && (position >= movies.count() - 10)
+        ) {
+            listViewModel.updateLoadMovies()
         }
     }
 
     override fun getItemCount(): Int = movies.size
 
-    fun bindMovies(newMovies: List<ModelData.Movie>) {
-        movies = newMovies
-        notifyDataSetChanged()
+    fun bindMovies(newMovies: List<PresentationModelData.MoviePresentation>) {
+        val diffCallback = DiffUtilCallbackSolution(movies, newMovies)
+        val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(diffCallback)
+        movies.clear()
+        newMovies.forEach{movies.add(it.copy())}
+        diffResult.dispatchUpdatesTo(this)
     }
 }
 
@@ -66,7 +80,7 @@ class DataViewHolder(itemView: View) : MoviesViewHolder(itemView) {
     private val name: TextView = itemView.findViewById(R.id.movie_name_text_view)
     private val duration: TextView = itemView.findViewById(R.id.movie_duration_text_view)
 
-    fun onBind(movie: ModelData.Movie) {
+    fun onBind(movie: PresentationModelData.MoviePresentation) {
         movie.poster?.let {
             Glide.with(context)
                 .load(it)
@@ -76,23 +90,34 @@ class DataViewHolder(itemView: View) : MoviesViewHolder(itemView) {
                 )
                 .into(poster)
         }
-        age.text = context.getString(R.string.age_format, movie.minimumAge)
+        if (movie.minimumAge == "") {
+            age.visibility = View.INVISIBLE
+        } else {
+            age.visibility = View.VISIBLE
+        }
+        age.text = movie.minimumAge
         if (movie.like) {
             like.setImageResource(R.drawable.like_check)
         } else {
             like.setImageResource(R.drawable.like)
         }
 
-        genre.text = movie.getGeners()
+        genre.text = movie.genres
         rating.rating = movie.ratings / 2
         name.text = movie.title
+        if (movie.runtime == 0) {
+            duration.visibility = View.INVISIBLE
+        } else {
+            duration.visibility = View.VISIBLE
+        }
         duration.text = context.getString(R.string.duration_format, movie.runtime)
     }
 }
 
 const val VIEW_TYPE_HEADER = 0
-const val VIEW_TYPE_MOVIE = 1
-const val VIEW_TYPE_ACTORS = 2
+const val VIEW_TYPE_FIND = 1
+const val VIEW_TYPE_MOVIE = 2
+const val VIEW_TYPE_ACTORS = 3
 
 interface OnRecyclerItemClicked {
     fun onClick(idMovie: Int)

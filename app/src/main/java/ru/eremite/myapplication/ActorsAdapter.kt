@@ -8,10 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import ru.eremite.myapplication.data.ModelData
+import ru.eremite.myapplication.ViewModel.PresentationModelData
 
 class ActorsAdapter() : RecyclerView.Adapter<ActorsViewHolder>() {
-    private var actors = listOf<ModelData.Actor>()
+    private var actors = listOf<PresentationModelData.ActorPresentation>()
 
     override fun getItemViewType(position: Int): Int {
         return actors.size
@@ -30,7 +30,7 @@ class ActorsAdapter() : RecyclerView.Adapter<ActorsViewHolder>() {
 
     override fun getItemCount(): Int = actors.size
 
-    fun bindActors(newActors: List<ModelData.Actor>) {
+    fun bindActors(newActors: List<PresentationModelData.ActorPresentation>) {
         actors = newActors
         notifyDataSetChanged()
     }
@@ -42,7 +42,7 @@ private class ActorDataViewHolder(itemView: View) : ActorsViewHolder(itemView) {
     private val photo: ImageView = itemView.findViewById(R.id.actor_photo_image_view)
     private val name: TextView = itemView.findViewById(R.id.actor_name_text_view)
 
-    fun onBind(actor: ModelData.Actor) {
+    fun onBind(actor: PresentationModelData.ActorPresentation) {
         actor.picture?.let {
             Glide.with(context)
                 .load(it)

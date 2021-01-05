@@ -3,6 +3,8 @@
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="back">Back</string>
+    <string name="find">Поиск</string>
+    <string name="find_hint">Введите название фильма</string>
     <string name="age">13+</string>
     <string name="reviews_format">%1$s Reviews</string>
     <string name="age_format">+%1$d</string>

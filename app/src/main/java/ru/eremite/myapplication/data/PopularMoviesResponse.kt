@@ -3,10 +3,10 @@ package ru.eremite.myapplication.data
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import ru.eremite.myapplication.data.ModelData.Movie
-import ru.eremite.myapplication.utils.BaseURL
+import ru.eremite.myapplication.utils.BaseDataTMDb
 
 @Serializable
-class MoviesResponse {
+class PopularMoviesResponse {
     @SerialName("page")
     var page = 0
 
@@ -33,6 +33,77 @@ class MoviesResponse {
 
     fun setResults(results: List<MovieNetwork>?) {
         this.results = results
+    }
+}
+
+@Serializable
+class AgeRatingMovieResponse {
+    @SerialName("id")
+    var idMovie = 0
+
+    @SerialName("results")
+    private var results: List<AgeRatingMovieCountryResponse> = emptyList()
+
+    fun getResults() =
+        results.find { it.country == BaseDataTMDb.BASE_COUNTRY_CERTIFICATION }?.getResults()
+            ?: results.find { it.country == BaseDataTMDb.BASE_COUNTRY_CERTIFICATION2 }?.getResults()
+            ?: ""
+}
+
+@Serializable
+class AgeRatingMovieCountryResponse {
+    @SerialName("iso_3166_1")
+    var country = ""
+
+    @SerialName("release_dates")
+    private var results: List<AgeRatingMovieCertificationResponse> = emptyList()
+
+    fun getResults() = results[0]?.certification ?: ""
+}
+
+@Serializable
+class AgeRatingMovieCertificationResponse {
+    @SerialName("certification")
+    var certification = ""
+}
+
+@Serializable
+class MovieDetailsResponse(
+    @SerialName("id")
+    val id: Int,
+    @SerialName("title")
+    val title: String = "",
+    @SerialName("overview")
+    val overview: String? = "",
+    @SerialName("poster_path")
+    val poster: String? = "",
+    @SerialName("backdrop_path")
+    val backdrop: String? = "",
+    @SerialName("vote_average")
+    val ratings: Float = 0F,
+    @SerialName("runtime")
+    val runtime: Int? = 0,
+    @SerialName("vote_count")
+    val numberOfRatings: Int = 0,
+    @SerialName("genres")
+    val genre: List<GenreNetwork>
+) {
+    fun getResults(): Movie {
+        var genreMovie = mutableListOf<ModelData.Genre>()
+        genre.forEach { genreMovie.add(ModelData.Genre(it.id, it.name)) }
+        return Movie(
+            id,
+            title,
+            overview ?: "",
+            BaseDataTMDb.PATH_POSTER + poster,
+            BaseDataTMDb.PATH_BACKDROP + backdrop,
+            ratings,
+            numberOfRatings,
+            "",
+            runtime ?: 0,
+            false,
+            genreMovie
+        )
     }
 }
 
@@ -69,7 +140,7 @@ class ActorsResponse {
                 ModelData.Actor(
                     it.id,
                     it.name,
-                    BaseURL.PATH_POSTER + it.profile_path
+                    BaseDataTMDb.PATH_POSTER + it.profile_path
                 )
             )
         }
@@ -86,11 +157,12 @@ data class MovieNetwork(
     @SerialName("overview")
     val overview: String = "",
     @SerialName("poster_path")
-    val poster: String = "",
+    val poster: String? = "",
     @SerialName("backdrop_path")
-    val backdrop: String = "",
+    val backdrop: String? = "",
     @SerialName("vote_average")
     val ratings: Float = 0F,
+    @SerialName("vote_count")
     val numberOfRatings: Int = -1,
     @SerialName("genre_ids")
     val genre: List<Int>,
@@ -105,12 +177,12 @@ data class MovieNetwork(
             id,
             title,
             overview,
-            BaseURL.PATH_POSTER + poster,
-            BaseURL.PATH_BACKDROP + backdrop,
-            -1F,
-            -1,
-            -1,
-            -1,
+            BaseDataTMDb.PATH_POSTER + poster,
+            BaseDataTMDb.PATH_BACKDROP + backdrop,
+            ratings,
+            numberOfRatings,
+            "",
+            0,
             false,
             ganreList
         )
