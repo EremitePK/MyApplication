@@ -73,7 +73,7 @@ class MainHeaderViewHolder(itemView: View) : RecyclerViewHolder(itemView) {
 }
 
 class MainDataViewHolder(itemView: View) : RecyclerViewHolder(itemView) {
-    private var listRecyclerView: RecyclerView = itemView.findViewById(R.id.item_recycler_view)
+    private val listRecyclerView: RecyclerView = itemView.findViewById(R.id.item_recycler_view)
 
     fun onBind(
         clickListener: OnRecyclerItemClicked,
@@ -85,18 +85,18 @@ class MainDataViewHolder(itemView: View) : RecyclerViewHolder(itemView) {
             (context as Activity).resources.configuration.screenWidthDp / 200 //The current width of the available screen space, in dp units, corresponding to screen width resource qualifier.
         when (typeList) {
             0 -> {
-                listRecyclerView?.layoutManager =
+                listRecyclerView.layoutManager =
                     GridLayoutManager(context, spanCount, GridLayoutManager.VERTICAL, false)
-                listRecyclerView?.adapter = MoviesAdapter(clickListener)
-                (listRecyclerView?.adapter as? MoviesAdapter)?.apply {
+                listRecyclerView.adapter = MoviesAdapter(clickListener)
+                (listRecyclerView.adapter as? MoviesAdapter)?.apply {
                     bindMovies(movies)
                 }
             }
             else -> {
-                listRecyclerView?.layoutManager =
+                listRecyclerView.layoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                listRecyclerView?.adapter = ActorsAdapter()
-                (listRecyclerView?.adapter as? ActorsAdapter)?.apply {
+                listRecyclerView.adapter = ActorsAdapter()
+                (listRecyclerView.adapter as? ActorsAdapter)?.apply {
                     //bindActors(MoviesDataSource().getActors())
                 }
             }

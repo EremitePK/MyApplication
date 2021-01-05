@@ -63,7 +63,6 @@ class DataViewHolder(itemView: View) : MoviesViewHolder(itemView) {
     val like: ImageView = itemView.findViewById(R.id.movie_like_image_view)
     private val genre: TextView = itemView.findViewById(R.id.movie_genre_text_view)
     private val rating: RatingBar = itemView.findViewById(R.id.movie_rating_bar)
-    private val reviews: TextView = itemView.findViewById(R.id.movie_posts_text_view)
     private val name: TextView = itemView.findViewById(R.id.movie_name_text_view)
     private val duration: TextView = itemView.findViewById(R.id.movie_duration_text_view)
 
@@ -87,8 +86,7 @@ class DataViewHolder(itemView: View) : MoviesViewHolder(itemView) {
         genre.text = movie.getGeners()
         rating.rating = movie.ratings / 2
         name.text = movie.title
-        reviews.text = ""
-        duration.text = context.getString(R.string.duration_format, movie.runtime.toString())
+        duration.text = context.getString(R.string.duration_format, movie.runtime)
     }
 }
 

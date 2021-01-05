@@ -5,46 +5,38 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import ru.eremite.myapplication.data.Header
 import ru.eremite.myapplication.data.ModelData
-import ru.eremite.myapplication.utils.ClassUtils
-
-const val SpanCount = "spanCount"
+import ru.eremite.myapplication.utils.MoviesViewModel
+import ru.eremite.myapplication.utils.MoviesViewModelFactory
 
 class FragmentMoviesList : Fragment() {
 
+    private val viewModel: MoviesViewModel by viewModels { MoviesViewModelFactory(requireContext()) }
     private var listener: TopMainMenuClickListener? = null
     private lateinit var movies: List<ModelData.Movie>
-    private var spanCount: Int? = 2
-    private lateinit var moviesAdapter: RecyclerViewAdapter
+    private var moviesAdapter: RecyclerViewAdapter? = null
+    private var movieListRecycler: RecyclerView? = null
+    private var stateLoaderMovies: View? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        spanCount = arguments?.getInt(SpanCount)
         return inflater.inflate(R.layout.fragment_movies_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val movieListRecycler = view.findViewById<RecyclerView>(R.id.movies_list_recycler_view)
-        val scope = CoroutineScope(Dispatchers.Main)
-        scope.launch {
-            movies = ClassUtils().loadData(requireContext())
-            moviesAdapter = RecyclerViewAdapter(
-                clickListener,
-                Header(getString(R.string.name_movies_list), R.drawable.combined_shape),
-                movies
-            )
-            movieListRecycler?.adapter = moviesAdapter
-        }
+        initViews(view)
+        viewModel.moviesList.observe(this.viewLifecycleOwner, this::updateAdapter)
+        viewModel.loadingMoviesList.observe(this.viewLifecycleOwner, this::setLoadingMovies)
     }
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -58,14 +50,27 @@ class FragmentMoviesList : Fragment() {
         super.onDetach()
     }
 
-    override fun onStart() {
-        super.onStart()
+    private fun initViews(view: View) {
+        movieListRecycler = view.findViewById(R.id.movies_list_recycler_view)
+        stateLoaderMovies = view.findViewById(R.id.state_loader_movies_progress_bar)
     }
 
-    private fun updateData() {
-        moviesAdapter?.let {
-            it.bindRecyclerView(movies)
+    private fun updateAdapter(listMovies: List<ModelData.Movie>) {
+        movies = listMovies
+        if (moviesAdapter == null) {
+            moviesAdapter = RecyclerViewAdapter(
+                clickListener,
+                Header(getString(R.string.name_movies_list), R.drawable.combined_shape),
+                movies
+            )
+            movieListRecycler?.adapter = moviesAdapter
         }
+        moviesAdapter?.bindRecyclerView(movies)
+    }
+
+    private fun setLoadingMovies(loadingMovies:Boolean){
+        movieListRecycler?.isInvisible = loadingMovies
+        stateLoaderMovies?.isVisible = loadingMovies
     }
 
     private fun doOnClick(idMovie: Int) {
@@ -75,8 +80,7 @@ class FragmentMoviesList : Fragment() {
     private fun doOnClickLike(idMovie: Int) {
         var copyList = movies.toMutableList();
         copyList.find { it.id == idMovie }.let {
-            var currentMovie = it
-            currentMovie = it?.copy(like = !it.like)
+            it?.copy(like = !it.like)
         }
     }
 

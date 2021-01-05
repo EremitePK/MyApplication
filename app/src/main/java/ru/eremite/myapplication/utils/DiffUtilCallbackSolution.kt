@@ -11,13 +11,7 @@ class DiffUtilCallbackSolution(
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        return when (oldItem) {
-            is ModelData.Movie -> {
-                oldItem.like == (newItem as ModelData.Movie).like
-            }
-            is ModelData.Actor -> true
-            else -> true
-        }
+        return oldItem.id == newItem.id
 
     }
 

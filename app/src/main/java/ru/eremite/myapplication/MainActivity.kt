@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
 class MainActivity : AppCompatActivity(), TopMainMenuClickListener {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -14,8 +15,6 @@ class MainActivity : AppCompatActivity(), TopMainMenuClickListener {
     }
 
     override fun onMoviesListActiv() {
-        val spanCount: Int =
-            resources.configuration.screenWidthDp / 180 //The current width of the available screen space, in dp units, corresponding to screen width resource qualifier.
 
         supportFragmentManager.beginTransaction()
             ?.replace(R.id.fragment_container_view, FragmentMoviesList.newInstance())

@@ -12,4 +12,8 @@ class ClassUtils {
     suspend fun loadData(context: Context): List<ModelData.Movie> {
         return loadMovies(context)
     }
+
+    suspend fun loadMovie(context: Context, idMovie: Int): ModelData.Movie? {
+        return loadMovies(context).find { it.id==idMovie }
+    }
 }

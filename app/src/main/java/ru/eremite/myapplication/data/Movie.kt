@@ -1,28 +1,28 @@
 package ru.eremite.myapplication.data
 
-sealed class ModelData() {
-    data class Genre(val id: Int, val name: String) : ModelData()
+sealed class ModelData(open val id: Int) {
+    data class Genre(override val id: Int, val name: String) : ModelData(id)
 
     data class Actor(
-        val id: Int,
+        override val id: Int,
         val name: String,
         val picture: String
-    ) : ModelData()
+    ) : ModelData(id)
 
     data class Movie(
-        val id: Int,
-        val title: String,
-        val overview: String,
-        val poster: String,
-        val backdrop: String,
-        val ratings: Float,
-        val numberOfRatings: Int,
-        val minimumAge: Int,
-        val runtime: Int,
-        val like: Boolean,
-        val genres: List<Genre>,
-        val actors: List<Actor>
-    ) : ModelData() {
+        override val id: Int = -1,
+        val title: String = "",
+        val overview: String = "",
+        val poster: String = "",
+        val backdrop: String = "",
+        val ratings: Float = 0F,
+        val numberOfRatings: Int=-1,
+        val minimumAge: Int = -1,
+        val runtime: Int=-1,
+        val like: Boolean=false,
+        val genres: List<Genre> = emptyList(),
+        val actors: List<Actor> = emptyList()
+    ) : ModelData(id) {
         fun getGeners(): String {
             var stringGenre = "";
             genres.forEach {
