@@ -1,11 +1,15 @@
 package ru.eremite.myapplication.utils
 
 import android.content.Context
-import android.content.res.Configuration
-import android.util.DisplayMetrics
+import ru.eremite.myapplication.data.ModelData
+import ru.eremite.myapplication.data.loadMovies
 
 class ClassUtils {
-    fun getURI(failName: String):String{
+    fun getURI(failName: String): String {
         return "http://lardis.ru/academ/webp/$failName.webp"
+    }
+
+    suspend fun loadData(context: Context): List<ModelData.Movie> {
+        return loadMovies(context)
     }
 }

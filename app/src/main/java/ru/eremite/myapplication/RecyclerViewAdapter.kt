@@ -9,18 +9,17 @@ import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ru.eremite.myapplication.utils.Header
-import ru.eremite.myapplication.utils.ModelData
-import ru.eremite.myapplication.utils.MoviesDataSource
+import ru.eremite.myapplication.data.Header
+import ru.eremite.myapplication.data.ModelData
 
 class RecyclerViewAdapter(
     private val clickListener: OnRecyclerItemClicked,
     private val header: Header,
-    private var movies: List<ModelData.Movie>) : RecyclerView.Adapter<RecyclerViewHolder>() {
-    //private var movies = listOf<Movie>()
+    private var movies: List<ModelData.Movie>
+) : RecyclerView.Adapter<RecyclerViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
-        return when (position){
+        return when (position) {
             0 -> VIEW_TYPE_HEADER
             1 -> VIEW_TYPE_MOVIE
             else -> VIEW_TYPE_ACTORS
@@ -42,9 +41,9 @@ class RecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
-        when (holder){
+        when (holder) {
             is MainDataViewHolder -> {
-                when (position){
+                when (position) {
                     2 -> holder.onBind(clickListener, movies, 1)
                     else -> holder.onBind(clickListener, movies, 0)
                 }
@@ -63,7 +62,7 @@ class RecyclerViewAdapter(
 
 abstract class RecyclerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-class MainHeaderViewHolder(itemView: View) : RecyclerViewHolder(itemView){
+class MainHeaderViewHolder(itemView: View) : RecyclerViewHolder(itemView) {
     private val imageHeader: ImageView = itemView.findViewById(R.id.header_image_view)
     private val nameHeader: TextView = itemView.findViewById(R.id.header_name_text_view)
 
@@ -73,16 +72,18 @@ class MainHeaderViewHolder(itemView: View) : RecyclerViewHolder(itemView){
     }
 }
 
-class MainDataViewHolder(itemView: View) : RecyclerViewHolder(itemView){
+class MainDataViewHolder(itemView: View) : RecyclerViewHolder(itemView) {
     private var listRecyclerView: RecyclerView = itemView.findViewById(R.id.item_recycler_view)
 
     fun onBind(
         clickListener: OnRecyclerItemClicked,
         movies: List<ModelData.Movie>,
-        typeList: Int) {
+        typeList: Int
+    ) {
         val context = itemView.context
-        val spanCount: Int = (context as Activity).resources.configuration.screenWidthDp/200 //The current width of the available screen space, in dp units, corresponding to screen width resource qualifier.
-        when (typeList){
+        val spanCount: Int =
+            (context as Activity).resources.configuration.screenWidthDp / 200 //The current width of the available screen space, in dp units, corresponding to screen width resource qualifier.
+        when (typeList) {
             0 -> {
                 listRecyclerView?.layoutManager =
                     GridLayoutManager(context, spanCount, GridLayoutManager.VERTICAL, false)
@@ -96,7 +97,7 @@ class MainDataViewHolder(itemView: View) : RecyclerViewHolder(itemView){
                     LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 listRecyclerView?.adapter = ActorsAdapter()
                 (listRecyclerView?.adapter as? ActorsAdapter)?.apply {
-                    bindActors(MoviesDataSource().getActors())
+                    //bindActors(MoviesDataSource().getActors())
                 }
             }
         }
