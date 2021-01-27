@@ -1,7 +1,7 @@
 package ru.eremite.myapplication.utils
 
 import androidx.recyclerview.widget.DiffUtil
-import ru.eremite.myapplication.ViewModel.PresentationModelData
+import ru.eremite.myapplication.presentation.models.PresentationModelData
 
 class DiffUtilCallbackSolution(
     private val oldList: List<PresentationModelData>,
