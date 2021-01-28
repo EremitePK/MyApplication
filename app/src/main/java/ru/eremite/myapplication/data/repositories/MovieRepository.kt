@@ -2,6 +2,7 @@ package ru.eremite.myapplication.data.repositories
 
 import android.content.Context
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import ru.eremite.myapplication.data.db.MovieDB
 import ru.eremite.myapplication.data.network.MovieNetwork
@@ -39,6 +40,9 @@ class MovieRepository(applicationContext: Context) {
         emit(movieNetwork.findMovie(idMovie))
     }
 
+    fun UpdateCache(): Flow<List<PresentationModelData.MoviePresentation>> = flow {
+        cashDB.getCacheUnderUpdate().collect { value -> emit(value) }
+    }
     fun loadActorsList(idMovie: Int): Flow<List<PresentationModelData.ActorPresentation>> = flow {
         emit(cashDB.getActors(idMovie))
         val actorsList = movieNetwork.getActors(idMovie)

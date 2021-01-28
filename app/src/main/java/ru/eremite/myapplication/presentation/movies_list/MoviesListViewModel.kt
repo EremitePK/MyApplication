@@ -25,6 +25,7 @@ class MoviesListViewModel(private val interactor: MoviesListInteractor) : ViewMo
 
     init {
         loadMovies()
+        ControlCacheUpdate()
     }
 
     private fun loadMovies() {
@@ -37,6 +38,13 @@ class MoviesListViewModel(private val interactor: MoviesListInteractor) : ViewMo
                         mutableMoviesList.value = listPresintetionMovie
                         mutableLoadingMoviesList.value = false
                     }
+            }
+        }
+    }
+
+    private fun ControlCacheUpdate() {
+        viewModelScope.launch {
+            interactor.ControlCacheUpdate().collect {/*НЕ ПОНИМАЮ ЗАЧЕМ СЛЕДИТЬ ЗА КЭШЕМ*/
             }
         }
     }
