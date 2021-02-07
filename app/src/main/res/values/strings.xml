@@ -3,10 +3,12 @@
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="back">Back</string>
+    <string name="find">Поиск</string>
+    <string name="find_hint">Введите название фильма</string>
     <string name="age">13+</string>
     <string name="reviews_format">%1$s Reviews</string>
     <string name="age_format">+%1$d</string>
-    <string name="duration_format">%1$s min</string>
+    <string name="duration_format">%1$d min</string>
     <string name="movie_name">Avengers:  End Game</string>
     <string name="movie_ganr">Action, Adventure, Fantasy</string>
     <string name="movie_reviews">125 Reviews</string>

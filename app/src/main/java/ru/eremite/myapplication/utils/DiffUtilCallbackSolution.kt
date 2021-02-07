@@ -1,23 +1,17 @@
 package ru.eremite.myapplication.utils
 
 import androidx.recyclerview.widget.DiffUtil
-import ru.eremite.myapplication.data.ModelData
+import ru.eremite.myapplication.presentation.models.PresentationModelData
 
 class DiffUtilCallbackSolution(
-    private val oldList: List<ModelData>,
-    private val newList: List<ModelData>
+    private val oldList: List<PresentationModelData>,
+    private val newList: List<PresentationModelData>
 ) : DiffUtil.Callback() {
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        return when (oldItem) {
-            is ModelData.Movie -> {
-                oldItem.like == (newItem as ModelData.Movie).like
-            }
-            is ModelData.Actor -> true
-            else -> true
-        }
+        return oldItem.equals(newItem)
 
     }
 
