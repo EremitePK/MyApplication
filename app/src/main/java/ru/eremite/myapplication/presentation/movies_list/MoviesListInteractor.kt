@@ -15,6 +15,10 @@ class MoviesListInteractor(private val repository: MovieRepository) {
         repository.loadMovies(currentPage).collect { value -> emit(value) }
     }
 
+    fun ControlCacheUpdate(): Flow<List<PresentationModelData.MoviePresentation>> = flow{
+        repository.UpdateCache().collect { value-> emit(value) }
+    }
+
     suspend fun loadMoviesAgeRuntime(listMovies: List<PresentationModelData.MoviePresentation>): List<PresentationModelData.MoviePresentation> =
         repository.loadMoviesAgeRuntime(listMovies)
 
